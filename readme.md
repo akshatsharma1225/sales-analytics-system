@@ -5,6 +5,9 @@
 
 The **Sales Analytics System** is a Python-based data processing and reporting application designed to analyze sales transactions, generate comprehensive business insights, and enrich product data through API integration. This system processes raw sales data, validates transactions, generates multiple report formats, and provides meaningful analytics for decision-making.
 
+**Version:** 1.0.0  
+**Status:** Active Development
+
 ---
 
 ##  Key Features
