@@ -1,3 +1,4 @@
+#Project initialized with basic folder structure
 # Sales Analytics System
 
 ##  Project Overview
@@ -124,7 +125,7 @@ Each transaction contains:
 - `ProductName`: Product description
 - `Quantity`: Number of units sold
 - `UnitPrice`: Price per unit
-- `CustomerID`: Customer identifier 
+- `CustomerID`: Customer identifier
 - `Region`: Geographic region (North, South, East, West)
 
 ---
