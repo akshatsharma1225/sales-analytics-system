@@ -15,6 +15,9 @@ FULL_REPORT_FILE = os.path.join(OUTPUT_DIR, "sales_report.txt")
 
 # ================= BASIC REPORT =================
 def generate_report(transactions):
+    """
+    Generates basic sales report with revenue and regional breakdown
+    """
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
     total_revenue = 0
