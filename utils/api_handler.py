@@ -1,6 +1,9 @@
 import requests
 
 def fetch_product_info(product_id):
+    """
+    Fetches product category from local cache
+    """
     categories = {
         "P101": "Laptop",
         "P102": "Mouse",
