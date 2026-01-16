@@ -47,13 +47,16 @@ def parse_transactions(raw_lines):
 
 def validate_and_filter(transactions, region=None, min_amount=None, max_amount=None):
     """
-    Validates transactions and applies optional filters
+    Validates transactions based on ID prefixes and business rules
+    Applies optional filters for region and amount ranges
+    Returns: (valid_transactions, invalid_count, summary_dict)
     """
 
     valid_transactions = []
     invalid_count = 0
 
     for tx in transactions:
+        # Validate ID prefixes
         if not tx["TransactionID"].startswith("T"):
             invalid_count += 1
             continue
@@ -63,102 +66,15 @@ def validate_and_filter(transactions, region=None, min_amount=None, max_amount=N
         if not tx["CustomerID"].startswith("C"):
             invalid_count += 1
             continue
-        if tx["Quantity"] <= 0 or tx["UnitPrice"] <= 0:
-            invalid_count += 1
-            continue
-
-        amount = tx["Quantity"] * tx["UnitPrice"]
-
-        if region and tx["Region"] != region:
-            continue
-        if min_amount and amount < min_amount:
-            continue
-        if max_amount and amount > max_amount:
-            continue
-
-        valid_transactions.append(tx)
-
-    summary = {
-        "total_input": len(transactions),
-        "invalid": invalid_count,
-        "final_count": len(valid_transactions)
-    }
-
-    return valid_transactions, invalid_count, summary
-
-def parse_transactions(raw_lines):
-    """
-    Parses raw lines into clean list of dictionaries
-    """
-
-    transactions = []
-
-    for line in raw_lines:
-        parts = line.split("|")
-
-        # Skiping incorrect number of fields
-        if len(parts) != 8:
-            continue
-
-        (
-            transaction_id,
-            date,
-            product_id,
-            product_name,
-            quantity,
-            unit_price,
-            customer_id,
-            region
-        ) = parts
-
-        # Cleaning commas in product name
-        product_name = product_name.replace(",", "")
-
-        try:
-            quantity = int(quantity.replace(",", ""))
-            unit_price = float(unit_price.replace(",", ""))
-        except ValueError:
-            continue
-
-        transactions.append({
-            "TransactionID": transaction_id,
-            "Date": date,
-            "ProductID": product_id,
-            "ProductName": product_name,
-            "Quantity": quantity,
-            "UnitPrice": unit_price,
-            "CustomerID": customer_id,
-            "Region": region
-        })
-
-    return transactions
-
-def validate_and_filter(transactions, region=None, min_amount=None, max_amount=None):
-    """
-    Validates transactions and applies optional filters
-    """
-
-    valid_transactions = []
-    invalid_count = 0
-
-    for tx in transactions:
         
-        if not tx["TransactionID"].startswith("T"):
-            invalid_count += 1
-            continue
-        if not tx["ProductID"].startswith("P"):
-            invalid_count += 1
-            continue
-        if not tx["CustomerID"].startswith("C"):
-            invalid_count += 1
-            continue
+        # Validate numeric values
         if tx["Quantity"] <= 0 or tx["UnitPrice"] <= 0:
             invalid_count += 1
             continue
 
         amount = tx["Quantity"] * tx["UnitPrice"]
 
-       
+        # Apply optional filters
         if region and tx["Region"] != region:
             continue
         if min_amount and amount < min_amount:
@@ -175,6 +91,7 @@ def validate_and_filter(transactions, region=None, min_amount=None, max_amount=N
     }
 
     return valid_transactions, invalid_count, summary
+
 
 def calculate_total_revenue(transactions):
     """
@@ -188,6 +105,7 @@ def calculate_total_revenue(transactions):
         total_revenue += tx["Quantity"] * tx["UnitPrice"]
 
     return total_revenue
+
 
 def region_wise_sales(transactions):
     """
@@ -230,6 +148,7 @@ def region_wise_sales(transactions):
 
     return sorted_data
 
+
 def top_selling_products(transactions, n=5):
     """
     Finds top n products by total quantity sold
@@ -262,6 +181,7 @@ def top_selling_products(transactions, n=5):
     result.sort(key=lambda x: x[1], reverse=True)
 
     return result[:n]
+
 
 def customer_analysis(transactions):
     """
@@ -305,6 +225,7 @@ def customer_analysis(transactions):
 
     return sorted_customers
 
+
 def daily_sales_trend(transactions):
     """
     Analyzes sales trends by date
@@ -340,6 +261,7 @@ def daily_sales_trend(transactions):
 
     return sorted_daily
 
+
 def find_peak_sales_day(transactions):
     """
     Identifies the date with highest revenue
@@ -372,6 +294,7 @@ def find_peak_sales_day(transactions):
         peak_date[1]["revenue"],
         peak_date[1]["transaction_count"]
     )
+
 
 def low_performing_products(transactions, threshold=10):
     """
