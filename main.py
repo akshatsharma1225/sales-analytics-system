@@ -41,6 +41,10 @@ def generate_report(transactions):
 
 # ================= FULL SALES REPORT =================
 def generate_sales_report(transactions, enriched_transactions, output_file=FULL_REPORT_FILE):
+    """
+    Generates comprehensive sales report with advanced analytics including regions, 
+    top products, customers, daily trends, and API enrichment summary
+    """
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     lines = []
 
