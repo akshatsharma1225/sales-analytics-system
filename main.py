@@ -182,26 +182,51 @@ def generate_sales_report(transactions, enriched_transactions, output_file=FULL_
 
 # ================= MAIN =================
 def main():
+    """
+    Main entry point for Sales Analytics System
+    Orchestrates data loading, validation, enrichment, and report generation
+    """
     print("=" * 40)
     print("       SALES ANALYTICS SYSTEM")
     print("=" * 40)
+    print()
 
+    # Load raw data
+    print("📥 Loading sales data...")
     raw_lines = read_sales_data(DATA_FILE)
+    print(f"✔ Loaded {len(raw_lines)} records from {DATA_FILE}")
+    print()
+
+    # Parse transactions
+    print("🔄 Parsing transactions...")
     transactions = parse_transactions(raw_lines)
+    print(f"✔ Parsed {len(transactions)} transactions")
+    print()
 
+    # Validate and filter
+    print("✅ Validating and filtering data...")
     valid_data, invalid_count, summary = validate_and_filter(transactions)
+    print(f"✔ Summary - Total: {summary['total_input']}, Invalid: {summary['invalid']}, Valid: {summary['final_count']}")
+    print()
 
+    # Enrich with API data
+    print("🔗 Enriching with product information...")
     for record in valid_data:
         record["Category"] = fetch_product_info(record["ProductID"])
-        record["API_Match"] = True   # safe default
+        record["API_Match"] = True
+    print(f"✔ Enriched {len(valid_data)} records")
+    print()
 
-    print("Summary:", summary)
-
+    # Generate reports
+    print("📊 Generating reports...")
     generate_report(valid_data)
     generate_sales_report(valid_data, valid_data)
+    print()
 
-    print("\n✔ PROCESS COMPLETED SUCCESSFULLY")
+    print("=" * 40)
+    print("✔ PROCESS COMPLETED SUCCESSFULLY")
     print("Reports generated in /output folder")
+    print("=" * 40)
 
 
 if __name__ == "__main__":
