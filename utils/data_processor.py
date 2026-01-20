@@ -67,6 +67,11 @@ def validate_and_filter(transactions, region=None, min_amount=None, max_amount=N
             invalid_count += 1
             continue
         
+        # Validate required fields are not empty
+        if not tx["CustomerID"] or not tx["Region"]:
+            invalid_count += 1
+            continue
+        
         # Validate numeric values
         if tx["Quantity"] <= 0 or tx["UnitPrice"] <= 0:
             invalid_count += 1

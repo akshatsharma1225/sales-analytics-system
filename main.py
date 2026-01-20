@@ -4,7 +4,7 @@ from collections import defaultdict
 
 from utils.file_handler import read_sales_data
 from utils.data_processor import parse_transactions, validate_and_filter
-from utils.api_handler import fetch_product_info
+from utils.api_handler import fetch_product_info, save_enriched_data
 
 # ================= CONSTANTS =================
 DATA_FILE = "data/sales_data.txt"
@@ -211,16 +211,27 @@ def main():
 
     # Enrich with API data
     print("🔗 Enriching with product information...")
+    enriched_data = []
     for record in valid_data:
         record["Category"] = fetch_product_info(record["ProductID"])
+        record["API_Category"] = record["Category"]
+        record["API_Brand"] = ""
+        record["API_Rating"] = ""
         record["API_Match"] = True
-    print(f"✔ Enriched {len(valid_data)} records")
+        enriched_data.append(record)
+    print(f"✔ Enriched {len(enriched_data)} records")
+    print()
+
+    # Save enriched data to file
+    print("💾 Saving enriched sales data...")
+    save_enriched_data(enriched_data)
+    print(f"✔ Enriched data saved to data/enriched_sales_data.txt")
     print()
 
     # Generate reports
     print("📊 Generating reports...")
     generate_report(valid_data)
-    generate_sales_report(valid_data, valid_data)
+    generate_sales_report(valid_data, enriched_data)
     print()
 
     print("=" * 40)
